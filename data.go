@@ -16,11 +16,11 @@ var localeData = map[string]*LocaleData{
 		Exponential:      "E",
 		CurrencyFormats: map[string]*CurrencyData{
 			"USD": {Symbol: "$", Name: "US Dollar", Format: "{symbol}{number}"},
-			"EUR": {Symbol: "€", Name: "Euro", Format: "{symbol} {number}"},
+			"EUR": {Symbol: "€", Name: "Euro", Format: "{symbol}{number}"},
 			"GBP": {Symbol: "£", Name: "British Pound", Format: "{symbol}{number}"},
 			"JPY": {Symbol: "¥", Name: "Japanese Yen", Format: "{symbol}{number}"},
 			"CNY": {Symbol: "¥", Name: "Chinese Yuan", Format: "{symbol}{number}"},
-			"RUB": {Symbol: "₽", Name: "Russian Ruble", Format: "{number} {symbol}"},
+			"RUB": {Symbol: "₽", Name: "Russian Ruble", Format: "{symbol}{number}"},
 		},
 		CompactPatterns: map[CompactRange]*CompactPattern{
 			Thousand: {Short: "0K", Long: "0 thousand"},

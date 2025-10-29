@@ -34,6 +34,17 @@ func NewFormatter(opts ...FormatterOption) *Formatter {
 
 // Format форматирует число в строку
 func (f *Formatter) Format(number float64) string {
+	// Проверка специальных значений
+	if math.IsNaN(number) {
+		return "NaN"
+	}
+	if math.IsInf(number, 1) {
+		return "∞"
+	}
+	if math.IsInf(number, -1) {
+		return "-∞"
+	}
+
 	switch f.options.Style {
 	case Decimal:
 		return f.formatDecimal(number)
@@ -57,16 +68,6 @@ func (f *Formatter) FormatInt(number int64) string {
 
 // formatDecimal форматирует число в десятичном формате
 func (f *Formatter) formatDecimal(number float64) string {
-	if math.IsNaN(number) {
-		return "NaN"
-	}
-	if math.IsInf(number, 1) {
-		return "∞"
-	}
-	if math.IsInf(number, -1) {
-		return "-∞"
-	}
-
 	// Обработка очень маленьких чисел
 	if isVerySmallNumber(number) {
 		return f.formatVerySmallNumber(number)
@@ -110,8 +111,8 @@ func (f *Formatter) formatCurrency(number float64) string {
 
 	currencyData, exists := f.locale.CurrencyFormats[f.options.Currency]
 	if !exists {
-		// Fallback для неизвестной валюты
-		return decimalStr + " " + f.options.Currency
+		// Fallback для неизвестной валюты - код валюты перед числом
+		return f.options.Currency + decimalStr
 	}
 
 	var currencyDisplay string
@@ -175,13 +176,16 @@ func (f *Formatter) formatScientific(number float64) string {
 	// Округляем мантиссу
 	mantissa := f.roundNumber(absNumber)
 
-	// Форматируем мантиссу
+	// Форматируем мантиссу как десятичное число
 	mantissaStr := f.formatDecimal(mantissa)
 
-	// Форматируем экспоненту
+	// Форматируем экспоненту без лишних нулей
 	exponentStr := strconv.Itoa(exponent)
 	if exponent >= 0 {
-		exponentStr = "+" + exponentStr
+		// Убираем + для положительной экспоненты
+		exponentStr = strconv.Itoa(exponent)
+	} else {
+		exponentStr = "-" + strconv.Itoa(-exponent)
 	}
 
 	result := mantissaStr + f.locale.Exponential + exponentStr
@@ -219,24 +223,11 @@ func (f *Formatter) formatCompact(number float64) string {
 	compactValue := number / divisor
 	absCompactValue := math.Abs(compactValue)
 
-	// Используем специальную точность для компактной записи
-	compactFormatter := &Formatter{
-		options: Options{
-			Locale:                f.options.Locale,
-			Style:                 Decimal,
-			UseGrouping:           false, // В компактной записи обычно не используется группировка
-			MinimumIntegerDigits:  1,
-			MinimumFractionDigits: 0,
-			MaximumFractionDigits: f.options.CompactPrecision,
-			RoundingMode:          f.options.RoundingMode,
-			SignDisplay:           SignNever, // Знак обрабатываем отдельно
-			TrimTrailingZeros:     f.options.TrimTrailingZeros,
-		},
-		locale: f.locale,
-	}
+	// Округляем до нужной точности
+	roundedValue := f.roundNumber(absCompactValue)
 
 	// Форматируем число
-	numberStr := compactFormatter.formatDecimal(absCompactValue)
+	numberStr := f.formatDecimal(roundedValue)
 
 	// Получаем шаблон для компактной записи
 	pattern := f.getCompactPattern(rangeType)
@@ -265,17 +256,27 @@ func (f *Formatter) getSign(number float64) string {
 	if number < 0 {
 		return f.locale.MinusSign
 	}
-	if number > 0 {
-		switch f.options.SignDisplay {
-		case SignAlways, SignExceptZero:
+
+	// Для положительных чисел и нуля
+	switch f.options.SignDisplay {
+	case SignAlways:
+		return f.locale.PlusSign
+	case SignExceptZero:
+		if number > 0 {
 			return f.locale.PlusSign
 		}
 	}
+
 	return ""
 }
 
 // applySignPattern применяет шаблон знака к отформатированному числу
 func (f *Formatter) applySignPattern(numberStr, sign string) string {
+	// Для SignNever игнорируем все знаки
+	if f.options.SignDisplay == SignNever {
+		return numberStr
+	}
+
 	if sign == "" {
 		return numberStr
 	}
@@ -399,7 +400,8 @@ func (f *Formatter) formatIntegerPart(intPart string) string {
 
 // formatFractionalPart форматирует дробную часть
 func (f *Formatter) formatFractionalPart(fracPart string) string {
-	if fracPart == "" {
+	// Если дробная часть пустая, но нужно минимальное количество знаков
+	if fracPart == "" && f.options.MinimumFractionDigits > 0 {
 		fracPart = strings.Repeat("0", f.options.MinimumFractionDigits)
 	}
 

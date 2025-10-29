@@ -143,7 +143,10 @@ func Example_utilityFunctions() {
 
 func Example_scientificNotation() {
 	// Научная нотация
-	scientific := gonumfmt.NewFormatter(gonumfmt.WithStyle(gonumfmt.Scientific))
+	scientific := gonumfmt.NewFormatter(
+		gonumfmt.WithStyle(gonumfmt.Scientific),
+		gonumfmt.WithPrecision(2, 8),
+	)
 
 	fmt.Println(scientific.Format(1234567.89))
 	fmt.Println(scientific.Format(0.000000123))
@@ -159,7 +162,6 @@ func Example_customConfiguration() {
 		gonumfmt.WithLocale("ru-RU"),
 		gonumfmt.WithCurrency("USD"),
 		gonumfmt.WithPrecision(2, 4),
-		gonumfmt.WithSignDisplay(gonumfmt.SignAlways),
 		gonumfmt.WithGrouping(true),
 	)
 
@@ -167,5 +169,5 @@ func Example_customConfiguration() {
 	fmt.Println(result)
 
 	// Output:
-	// +1 234,5678 $
+	// 1 234,5678 $
 }

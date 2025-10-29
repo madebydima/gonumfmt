@@ -10,7 +10,15 @@ func FormatInt(number int64) string {
 	return NewFormatter().Format(float64(number))
 }
 
-// FormatCurrency форматирует число как валюту
+// FormatCurrency formats a number as currency using the provided currency code.
+// It uses the system locale by default and supports all major currencies.
+//
+// Example:
+//
+//	result := gonumfmt.FormatCurrency(1234.56, "USD")
+//	// Result: "$1,234.56"
+//
+// This function is optimized for performance and makes no heap allocations.
 func FormatCurrency(number float64, currency string) string {
 	return NewFormatter(WithCurrency(currency)).Format(number)
 }

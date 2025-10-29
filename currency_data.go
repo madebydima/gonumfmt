@@ -22,7 +22,6 @@ var currencyData = map[string]*CurrencyData{
 	"MXN": {Symbol: "MX$", Name: "Mexican Peso", Format: "{symbol}{number}", Spacing: ""},
 	"SAR": {Symbol: "ر.س", Name: "Saudi Riyal", Format: "{number} {symbol}", Spacing: " "},
 	"AED": {Symbol: "د.إ", Name: "UAE Dirham", Format: "{number} {symbol}", Spacing: " "},
-	// Добавляем больше валют по мере необходимости
 }
 
 // getCurrencyData возвращает данные о валюте
