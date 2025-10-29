@@ -3,8 +3,8 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/madebydima/gonumfmt.svg)](https://pkg.go.dev/github.com/madebydima/gonumfmt)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/madebydima/gonumfmt)](https://goreportcard.com/report/github.com/madebydima/gonumfmt)
-[![Tests](https://github.com/madebydima/gonumfmt/actions/workflows/ci.yml/badge.svg)](https://github.com/madebydima/gonumfmt/actions)
-[![codecov](https://codecov.io/gh/madebydima/gonumfmt/branch/main/graph/badge.svg)](https://codecov.io/gh/madebydima/gonumfmt)
+<!-- [![Tests](https://github.com/madebydima/gonumfmt/actions/workflows/ci.yml/badge.svg)](https://github.com/madebydima/gonumfmt/actions)
+[![codecov](https://codecov.io/gh/madebydima/gonumfmt/branch/main/graph/badge.svg)](https://codecov.io/gh/madebydima/gonumfmt) -->
 
 > **True story**: I love Go. I really do. But when I needed to format numbers for different locales, I went on a quest through the Go ecosystem and found... well, let's just say the pickings were slim. So I did what any sane developer would do - I built the package I wished existed! 🚀
 
